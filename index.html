@@ -46,10 +46,8 @@
     header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 1.5rem;
+      justify-content: center;
+      margin-bottom: 1.25rem;
       padding-bottom: 1rem;
       border-bottom: 1px solid rgba(255,255,255,0.15);
     }
@@ -57,8 +55,6 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      flex: 1;
-      justify-content: center;
     }
     .brand-bar {
       width: 5px;
@@ -115,35 +111,35 @@
     /* ── GRID DE ESCENARIOS ── */
     .scenarios-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
     }
 
     /* ── TARJETA DE ESCENARIO ── */
     .scenario-card {
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 18px;
+      border-radius: 16px;
       overflow: hidden;
       backdrop-filter: blur(10px);
       display: flex;
       flex-direction: column;
     }
     .scenario-header {
-      padding: 1rem 1.25rem 0.75rem;
-      border-bottom: 1px solid rgba(255,255,255,0.09);
-      background: rgba(200,16,46,0.15);
+      padding: 0.85rem 1.25rem 0.75rem;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+      background: linear-gradient(135deg, rgba(30,58,138,0.85), rgba(37,99,235,0.6));
     }
     .scenario-header .tag {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
-      color: #C8102E;
-      margin-bottom: 4px;
+      color: #93c5fd;
+      margin-bottom: 3px;
     }
     .scenario-header h2 {
-      font-size: 1.2rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: #fff;
       letter-spacing: 0.02em;
@@ -152,7 +148,7 @@
     .chart-area {
       padding: 0.75rem 1rem 0.25rem;
       position: relative;
-      height: 100px;
+      height: 120px;
     }
 
     /* ── PILLS DE VOTOS ── */
@@ -341,6 +337,10 @@
   // ── Render tarjetas ──
   function renderScenarios(scenData) {
     const grid = document.getElementById('scenarios-grid');
+    // Destruir charts existentes antes de limpiar el DOM
+    Object.keys(charts).forEach(id => {
+      if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+    });
     grid.innerHTML = '';
     scenData.forEach(({ idx, vA, vB, vC, total, mayoria }) => {
       const pA = total ? Math.round(vA/total*100)+'%' : '0%';
