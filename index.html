@@ -13,226 +13,173 @@
       min-height: 100vh;
       color: #fff;
       background-color: #0a0f1e;
-      background-image: url('noatum-bgk.png');
-      background-size: cover;
-      background-position: center top;
-      background-repeat: no-repeat;
-      background-attachment: scroll;
-    }
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: rgba(5, 12, 35, 0.55);
-      z-index: 0;
     }
 
-    /* ── CONTENIDO ── */
+    /* ══ FONDO — solo desktop ══ */
+    @media (min-width: 900px) {
+      body {
+        background-image: url('noatum-bgk.png');
+        background-size: cover;
+        background-position: center top;
+        background-repeat: no-repeat;
+      }
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(5, 12, 35, 0.52);
+        z-index: 0;
+      }
+    }
+
+    /* ══ CONTENEDOR ══ */
     .page {
       position: relative;
       z-index: 1;
-      width: 64%;
-      max-width: 1100px;
+      width: 100%;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 13vh 1rem 2rem;
+      padding: 1rem 1rem 2rem;
     }
 
-    /* ── HEADER ── */
+    /* Desktop: empuja contenido al interior del tablero */
+    @media (min-width: 900px) {
+      .page { padding-top: 12vh; width: 64%; }
+    }
+
+    /* ══ HEADER ══ */
     header {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.75rem;
       padding-bottom: 0.6rem;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
     }
-    .header-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .header-brand { display: flex; align-items: center; gap: 10px; }
     .brand-bar {
-      width: 5px;
-      height: 48px;
+      width: 4px; height: 36px;
       background: #C8102E;
-      border-radius: 3px;
-      flex-shrink: 0;
+      border-radius: 3px; flex-shrink: 0;
     }
-    .brand-text {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 0;
-    }
+    .brand-text { display: flex; align-items: center; flex-wrap: wrap; gap: 0; }
     .brand-text span {
-      font-size: 1.3rem;
-      font-weight: 800;
-      line-height: 1;
-      letter-spacing: 0.06em;
+      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+      font-weight: 800; line-height: 1; letter-spacing: 0.06em;
     }
     .brand-sep {
       color: #C8102E;
-      font-size: 1.3rem;
-      font-weight: 300;
-      margin: 0 8px;
+      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
+      font-weight: 300; margin: 0 6px;
     }
     .brand-dark { color: #fff; }
     .brand-red  { color: #C8102E; }
-    .brand-underline { display: none; }
-    .live-badge {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(34,197,94,0.15);
-      border: 1px solid rgba(34,197,94,0.35);
-      border-radius: 20px;
-      padding: 5px 14px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #4ade80;
-      letter-spacing: 0.04em;
-    }
-    .live-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: #4ade80;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity:1; transform:scale(1); }
-      50%      { opacity:.4; transform:scale(0.85); }
-    }
 
-    /* ── GRID DE ESCENARIOS ── */
+    /* ══ GRID ══ */
     .scenarios-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 700px) {
+      .scenarios-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
     }
 
-    /* ── TARJETA DE ESCENARIO ── */
+    /* ══ TARJETA ══ */
     .scenario-card {
-      background: rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.08);
       border: 1px solid rgba(255,255,255,0.13);
-      border-radius: 16px;
+      border-radius: 14px;
       overflow: hidden;
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
+      backdrop-filter: blur(8px);
+      display: flex; flex-direction: column;
     }
     .scenario-header {
       padding: 0.45rem 1rem 0.4rem;
       border-bottom: 2px solid rgba(255,255,255,0.1);
-      background: linear-gradient(135deg, rgba(200,16,46,0.9), rgba(200,16,46,0.65));
+      background: linear-gradient(135deg, rgba(200,16,46,0.92), rgba(200,16,46,0.68));
       text-align: center;
     }
     .scenario-header .tag {
-      font-size: 0.58rem;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.65);
-      margin-bottom: 1px;
+      font-size: 0.58rem; font-weight: 800;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65); margin-bottom: 1px;
     }
     .scenario-header h2 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.03em;
+      font-size: clamp(0.9rem, 2vw, 1rem);
+      font-weight: 700; color: #fff;
     }
 
+    /* ══ CHART ══ */
     .chart-area {
-      padding: 0.3rem 0.75rem 0.1rem;
-      position: relative;
-      height: 72px;
+      padding: 0.4rem 0.75rem 0.1rem;
+      position: relative; height: 90px;
+    }
+    @media (min-width: 900px) {
+      .chart-area { height: 75px; }
     }
 
-    /* ── PILLS DE VOTOS ── */
+    /* ══ PILLS ══ */
     .vote-pills {
-      display: flex;
-      gap: 4px;
-      padding: 0 0.85rem 0.35rem;
+      display: flex; gap: 4px;
+      padding: 0.3rem 0.7rem 0.3rem;
       flex-wrap: wrap;
     }
     .pill {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      display: flex; align-items: center; gap: 4px;
       background: rgba(255,255,255,0.08);
-      border-radius: 20px;
-      padding: 2px 8px;
-      font-size: 0.68rem;
-      font-weight: 500;
+      border-radius: 20px; padding: 2px 8px;
+      font-size: 0.68rem; font-weight: 500;
     }
-    .pill .dot { width:8px; height:8px; border-radius:50%; }
-    .dot-a { background:#60a5fa; }
-    .dot-b { background:#4ade80; }
-    .dot-c { background:#fb923c; }
-    .pill .pct { color: rgba(255,255,255,0.55); font-size:0.68rem; margin-left:1px; }
+    .pill .dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-a { background: #60a5fa; }
+    .dot-b { background: #4ade80; }
+    .dot-c { background: #fb923c; }
+    .pill .pct { color: rgba(255,255,255,0.55); font-size: 0.65rem; margin-left: 1px; }
 
+    /* ══ MAYORÍA ══ */
     .mayoria-badge {
-      margin: 0 0.85rem 0.35rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.66rem;
-      font-weight: 700;
-      color: #fde68a;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      margin: 0 0.7rem 0.3rem;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.65rem; font-weight: 700;
+      color: #fde68a; text-transform: uppercase; letter-spacing: 0.05em;
     }
-    .mayoria-badge span { font-size:0.8rem; }
 
-    /* ── INSIGHT ── */
+    /* ══ INSIGHT ══ */
     .insight-box {
-      margin: 0 0.85rem 0.65rem;
+      margin: 0 0.7rem 0.6rem;
       background: rgba(255,255,255,0.05);
       border-left: 3px solid #60a5fa;
       border-radius: 0 8px 8px 0;
-      padding: 0.35rem 0.65rem;
-      flex: 1;
+      padding: 0.35rem 0.6rem; flex: 1;
     }
     .insight-box .insight-lbl {
-      font-size: 0.58rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      color: #93c5fd;
-      margin-bottom: 2px;
+      font-size: 0.58rem; font-weight: 700;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      color: #93c5fd; margin-bottom: 2px;
     }
     .insight-box p {
-      font-size: 0.68rem;
-      line-height: 1.4;
-      color: rgba(255,255,255,0.82);
+      font-size: 0.68rem; line-height: 1.4;
+      color: rgba(255,255,255,0.85);
     }
 
-    /* ── FOOTER ── */
-    footer {
-      text-align: center;
-      margin-top: 2.5rem;
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.25);
+    /* ══ MOBILE: tarjeta horizontal ══ */
+    @media (max-width: 699px) {
+      .chart-area { height: 100px; }
+      .insight-box p { font-size: 0.78rem; line-height: 1.5; }
+      .pill { font-size: 0.75rem; padding: 3px 10px; }
+      .scenario-header h2 { font-size: 1.1rem; }
     }
 
-    /* ── LOADING / ERROR ── */
     .status-msg {
-      text-align: center;
-      padding: 3rem;
-      color: rgba(255,255,255,0.5);
-      font-size: 0.95rem;
-    }
-
-    @media (max-width: 600px) {
-      .header-left h1 { font-size: 1.15rem; }
-      .scenarios-grid { grid-template-columns: 1fr; }
+      text-align: center; padding: 2rem;
+      color: rgba(255,255,255,0.5); font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-
 <div class="page">
 
-  <!-- HEADER -->
   <header>
     <div class="header-brand">
       <div class="brand-bar"></div>
@@ -247,21 +194,16 @@
     </div>
   </header>
 
-  <!-- ESCENARIOS -->
   <div class="scenarios-grid" id="scenarios-grid">
-    <div class="status-msg" id="loading-msg">⏳ Conectando con Google Sheets...</div>
+    <div class="status-msg" id="loading-msg">⏳ Conectando...</div>
   </div>
 
-  <footer id="footer-time"></footer>
-
 </div>
-
 <script>
   const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmhc7rMhHxWRxlPvExnYe8-bgixqsq71eK3q_AbK1iQl3_rGwFa5Tta_cjbA96zB65FNly0bRFmFOQ/pub?gid=2001144107&single=true&output=csv';
   const REFRESH_MS = 30000;
   const charts = {};
 
-  // ── Insights hardcodeados por escenario y opción ──
   const INSIGHTS = {
     1: {
       A: '⚠️ La mayoría priorizó recuperar el tiempo operacional aun con controles incompletos. Esto refleja cómo la presión por cumplir puede desplazar decisiones preventivas y normalizar riesgos temporales dentro de la operación.',
@@ -280,13 +222,11 @@
     }
   };
 
-  // ── Parser CSV robusto ──
   function parseCSV(text) {
     const rows = [];
     for (const line of text.split('\n')) {
       if (!line.trim()) continue;
-      const cols = [];
-      let inQ = false, col = '';
+      const cols = []; let inQ = false, col = '';
       for (let i = 0; i < line.length; i++) {
         const ch = line[i];
         if (ch === '"') { inQ = !inQ; }
@@ -299,51 +239,39 @@
     return rows;
   }
 
-  // ── Chart ──
   function renderChart(id, a, b, c) {
     const canvas = document.getElementById(id);
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (charts[id]) {
-      charts[id].data.datasets[0].data = [a, b, c];
-      charts[id].update('active');
-    } else {
-      charts[id] = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Opción A', 'Opción B', 'Opción C'],
-          datasets: [{
-            data: [a, b, c],
-            backgroundColor: ['rgba(96,165,250,0.75)','rgba(74,222,128,0.75)','rgba(251,146,60,0.75)'],
-            borderColor: ['#60a5fa','#4ade80','#fb923c'],
-            borderWidth: 1.5, borderRadius: 5
-          }]
-        },
-        options: {
-          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw} votos` } } },
-          scales: {
-            x: { ticks: { color: 'rgba(255,255,255,0.45)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.07)' }, beginAtZero: true },
-            y: { ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 12, weight: '600' } }, grid: { display: false } }
-          }
+    if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+    charts[id] = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Opción A', 'Opción B', 'Opción C'],
+        datasets: [{
+          data: [a, b, c],
+          backgroundColor: ['rgba(96,165,250,0.8)','rgba(74,222,128,0.8)','rgba(251,146,60,0.8)'],
+          borderColor: ['#60a5fa','#4ade80','#fb923c'],
+          borderWidth: 1.5, borderRadius: 4
+        }]
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw} votos` } } },
+        scales: {
+          x: { ticks: { color: 'rgba(255,255,255,0.45)', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.07)' }, beginAtZero: true },
+          y: { ticks: { color: 'rgba(255,255,255,0.75)', font: { size: 10, weight: '600' } }, grid: { display: false } }
         }
-      });
-    }
+      }
+    });
   }
 
-  // ── Render tarjetas ──
   function renderScenarios(scenData) {
     const grid = document.getElementById('scenarios-grid');
-    // Destruir charts existentes antes de limpiar el DOM
-    Object.keys(charts).forEach(id => {
-      if (charts[id]) { charts[id].destroy(); delete charts[id]; }
-    });
+    Object.keys(charts).forEach(id => { if (charts[id]) { charts[id].destroy(); delete charts[id]; } });
     grid.innerHTML = '';
     scenData.forEach(({ idx, vA, vB, vC, total, mayoria }) => {
-      const pA = total ? Math.round(vA/total*100)+'%' : '0%';
-      const pB = total ? Math.round(vB/total*100)+'%' : '0%';
-      const pC = total ? Math.round(vC/total*100)+'%' : '0%';
-      const insight = INSIGHTS[idx][mayoria] || 'Insight pendiente...';
+      const pct = v => total ? Math.round(v/total*100)+'%' : '0%';
+      const insight = INSIGHTS[idx][mayoria] || '';
       const chartId = `chart-${idx}`;
       const card = document.createElement('div');
       card.className = 'scenario-card';
@@ -356,11 +284,11 @@
           <canvas id="${chartId}" role="img" aria-label="Votos escenario ${idx}"></canvas>
         </div>
         <div class="vote-pills">
-          <span class="pill"><span class="dot dot-a"></span>A — ${vA} votos <span class="pct">(${pA})</span></span>
-          <span class="pill"><span class="dot dot-b"></span>B — ${vB} votos <span class="pct">(${pB})</span></span>
-          <span class="pill"><span class="dot dot-c"></span>C — ${vC} votos <span class="pct">(${pC})</span></span>
+          <span class="pill"><span class="dot dot-a"></span>A — ${vA} <span class="pct">(${pct(vA)})</span></span>
+          <span class="pill"><span class="dot dot-b"></span>B — ${vB} <span class="pct">(${pct(vB)})</span></span>
+          <span class="pill"><span class="dot dot-c"></span>C — ${vC} <span class="pct">(${pct(vC)})</span></span>
         </div>
-        <div class="mayoria-badge"><span>🏆</span> Mayoría: Opción ${mayoria}</div>
+        <div class="mayoria-badge">🏆 Mayoría: Opción ${mayoria}</div>
         <div class="insight-box">
           <div class="insight-lbl">💡 Insight</div>
           <p>${insight}</p>
@@ -370,14 +298,10 @@
     });
   }
 
-  // ── Cálculo desde Hoja1 ──
   function calcFromHoja1(rows) {
-    // Saltar fila de encabezado
     const data = rows.slice(1).filter(r => r[5] && r[5].trim() === 'Finalizado');
-
-    // col 6=E1, 7=E2, 8=E3
-    const scenData = [1, 2, 3].map(idx => {
-      const col = 5 + idx; // col 6,7,8 → índice 6,7,8
+    const scenData = [1,2,3].map(idx => {
+      const col = 5 + idx;
       const vA = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'A').length;
       const vB = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'B').length;
       const vC = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'C').length;
@@ -387,32 +311,16 @@
       else if (vC > vA && vC > vB) mayoria = 'C';
       return { idx, vA, vB, vC, total, mayoria };
     });
-
-    return { scenData, totalPart: data.length };
+    return scenData;
   }
 
-  // ── Fetch principal ──
   async function loadData() {
     try {
-      const res  = await fetch(SHEET_URL + '&t=' + Date.now());
+      const res = await fetch(SHEET_URL + '&t=' + Date.now());
       const text = await res.text();
       const rows = parseCSV(text);
-
-      const { scenData, totalPart } = calcFromHoja1(rows);
-
-      if (!totalPart && scenData.every(s => s.total === 0)) {
-        const msg = document.getElementById('loading-msg');
-        if (msg) msg.textContent = '⏳ Sin respuestas aún. Esperando participantes...';
-        return;
-      }
-
-      renderScenarios(scenData);
-
-      const now = new Date();
-      document.getElementById('footer-time').textContent = '';
-
-    } catch (err) {
-      console.error(err);
+      renderScenarios(calcFromHoja1(rows));
+    } catch(err) {
       const msg = document.getElementById('loading-msg');
       if (msg) msg.textContent = '❌ Error al conectar con Google Sheets.';
     }
@@ -421,6 +329,5 @@
   loadData();
   setInterval(loadData, REFRESH_MS);
 </script>
-
 </body>
 </html>
