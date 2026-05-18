@@ -204,7 +204,7 @@
 
 </div>
 <script>
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmhc7rMhHxWRxlPvExnYe8-bgixqsq71eK3q_AbK1iQl3_rGwFa5Tta_cjbA96zB65FNly0bRFmFOQ/pub?gid=2001144107&single=true&output=csv';
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR6beUttk7b30ZQN5irmhdZf8Ag3coB0YBMdGmmuHJOYJv6EK7eNFNu9r0xFBxBysCZgfx_vzbNi0jS/pub?gid=628326535&single=true&output=csv';
   const REFRESH_MS = 30000;
   const charts = {};
 
@@ -303,12 +303,19 @@
   }
 
   function calcFromHoja1(rows) {
-    const data = rows.slice(1).filter(r => r[5] && r[5].trim() === 'Finalizado');
-    const scenData = [1,2,3].map(idx => {
-      const col = 5 + idx;
-      const vA = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'A').length;
-      const vB = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'B').length;
-      const vC = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'C').length;
+    // Nueva estructura: Telefono | Nombre | Escenario | Respuesta | Fecha
+    // Una fila por respuesta, col[2]=escenario, col[3]=A/B/C
+    const data = rows.slice(1).filter(r => r[2] && r[3]);
+
+    const scenData = [1, 2, 3].map(idx => {
+      // Escenario puede venir como "1", "1.0", "Escenario 1"
+      const filas = data.filter(r => {
+        const esc = r[2].trim().replace('.0','').replace('Escenario ','').trim();
+        return esc === String(idx);
+      });
+      const vA = filas.filter(r => r[3].trim().toUpperCase() === 'A').length;
+      const vB = filas.filter(r => r[3].trim().toUpperCase() === 'B').length;
+      const vC = filas.filter(r => r[3].trim().toUpperCase() === 'C').length;
       const total = vA + vB + vC;
       let mayoria = 'A';
       if (vB >= vA && vB >= vC) mayoria = 'B';
