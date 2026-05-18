@@ -34,7 +34,7 @@
       width: 76%;
       max-width: 1100px;
       margin: 0 auto;
-      padding: 8vh 1rem 2rem;
+      padding: 13vh 1rem 2rem;
     }
 
     /* ── HEADER ── */
@@ -409,8 +409,7 @@
       renderScenarios(scenData);
 
       const now = new Date();
-      document.getElementById('footer-time').textContent =
-        `${totalPart} participantes · Última actualización: ${now.toLocaleTimeString('es-PE')} · Refresco cada 30s`;
+      document.getElementById('footer-time').textContent = '';
 
     } catch (err) {
       console.error(err);
