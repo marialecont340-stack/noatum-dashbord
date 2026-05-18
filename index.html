@@ -267,10 +267,28 @@
 <script>
   const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRmhc7rMhHxWRxlPvExnYe8-bgixqsq71eK3q_AbK1iQl3_rGwFa5Tta_cjbA96zB65FNly0bRFmFOQ/pub?gid=2001144107&single=true&output=csv';
   const REFRESH_MS = 30000;
-
   const charts = {};
 
-  // ── Parser CSV robusto (maneja comas dentro de comillas) ──
+  // ── Insights hardcodeados por escenario y opción ──
+  const INSIGHTS = {
+    1: {
+      A: '⚠️ La mayoría priorizó recuperar el tiempo operacional aun con controles incompletos. Esto refleja cómo la presión por cumplir puede desplazar decisiones preventivas y normalizar riesgos temporales dentro de la operación.',
+      B: '✅ La mayoría priorizó asegurar completamente el área antes de continuar la maniobra. Esto refleja una cultura preventiva donde la intervención oportuna logra mantenerse incluso bajo presión operacional.',
+      C: '⚠️ La mayoría optó por una solución intermedia para mantener la continuidad operacional mientras se completaban los controles. Esto evidencia cómo, bajo presión, las operaciones tienden a negociar parcialmente el riesgo.'
+    },
+    2: {
+      A: '⚠️ La mayoría confió en la experiencia del equipo para continuar la maniobra aun con personal expuesto en la línea de operación. Esto refleja cómo la costumbre y la confianza operacional pueden disminuir la percepción real del riesgo.',
+      B: '✅ La mayoría priorizó intervenir antes de continuar la maniobra. Esto refleja una cultura preventiva donde la experiencia no reemplaza los controles ni la percepción activa del riesgo.',
+      C: '⚠️ La mayoría decidió permitir continuar la maniobra para evitar afectar la continuidad operacional. Esto evidencia cómo, bajo rutinas conocidas, el riesgo puede empezar a normalizarse sin generar intervención inmediata.'
+    },
+    3: {
+      A: '⚠️ La mayoría priorizó continuar la operación debido al nivel jerárquico de la solicitud. Esto refleja cómo la presión operacional y la autoridad pueden influir en el cumplimiento de controles preventivos.',
+      B: '✅ La mayoría priorizó mantener el estándar preventivo antes de iniciar la maniobra. Esto refleja una cultura donde los procedimientos se sostienen incluso bajo presión operacional o solicitudes jerárquicas.',
+      C: '⚠️ La mayoría optó por avanzar parcialmente para mantener la continuidad operacional mientras se completaban los controles pendientes. Esto evidencia cómo, bajo presión jerárquica, las operaciones tienden a flexibilizar temporalmente los estándares preventivos.'
+    }
+  };
+
+  // ── Parser CSV robusto ──
   function parseCSV(text) {
     const rows = [];
     for (const line of text.split('\n')) {
@@ -289,84 +307,57 @@
     return rows;
   }
 
-  // ── Extraer número de strings como "50%" o "5" ──
-  function num(v) {
-    return parseFloat((v || '0').replace('%','').replace(',','.')) || 0;
-  }
-
-  // ── Crear o actualizar chart ──
+  // ── Chart ──
   function renderChart(id, a, b, c) {
     const canvas = document.getElementById(id);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const data = {
-      labels: ['Opción A', 'Opción B', 'Opción C'],
-      datasets: [{
-        data: [a, b, c],
-        backgroundColor: ['rgba(96,165,250,0.75)', 'rgba(74,222,128,0.75)', 'rgba(251,146,60,0.75)'],
-        borderColor:      ['#60a5fa','#4ade80','#fb923c'],
-        borderWidth: 1.5,
-        borderRadius: 5,
-      }]
-    };
     if (charts[id]) {
       charts[id].data.datasets[0].data = [a, b, c];
       charts[id].update('active');
     } else {
       charts[id] = new Chart(ctx, {
         type: 'bar',
-        data,
+        data: {
+          labels: ['Opción A', 'Opción B', 'Opción C'],
+          datasets: [{
+            data: [a, b, c],
+            backgroundColor: ['rgba(96,165,250,0.75)','rgba(74,222,128,0.75)','rgba(251,146,60,0.75)'],
+            borderColor: ['#60a5fa','#4ade80','#fb923c'],
+            borderWidth: 1.5, borderRadius: 5
+          }]
+        },
         options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: ctx => ` ${ctx.raw} votos` } }
-          },
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.raw} votos` } } },
           scales: {
-            x: {
-              ticks: { color: 'rgba(255,255,255,0.45)', font: { size: 11 } },
-              grid:  { color: 'rgba(255,255,255,0.07)' },
-              beginAtZero: true
-            },
-            y: {
-              ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 12, weight: '600' } },
-              grid:  { display: false }
-            }
+            x: { ticks: { color: 'rgba(255,255,255,0.45)', font: { size: 11 } }, grid: { color: 'rgba(255,255,255,0.07)' }, beginAtZero: true },
+            y: { ticks: { color: 'rgba(255,255,255,0.7)', font: { size: 12, weight: '600' } }, grid: { display: false } }
           }
         }
       });
     }
   }
 
-  // ── Render de los 3 escenarios ──
-  function renderScenarios(scenRows) {
+  // ── Render tarjetas ──
+  function renderScenarios(scenData) {
     const grid = document.getElementById('scenarios-grid');
     grid.innerHTML = '';
-
-    scenRows.forEach((row, i) => {
-      const nombre  = row[0] || `Escenario ${i+1}`;
-      const vA      = num(row[1]);
-      const vB      = num(row[2]);
-      const vC      = num(row[3]);
-      const total   = num(row[4]) || (vA + vB + vC);
-      const pA      = row[5] || (total ? Math.round(vA/total*100)+'%' : '0%');
-      const pB      = row[6] || (total ? Math.round(vB/total*100)+'%' : '0%');
-      const pC      = row[7] || (total ? Math.round(vC/total*100)+'%' : '0%');
-      const mayoria = row[8] || '—';
-      const insight = row[9] || 'Insight pendiente...';
-      const chartId = `chart-${i}`;
-
+    scenData.forEach(({ idx, vA, vB, vC, total, mayoria }) => {
+      const pA = total ? Math.round(vA/total*100)+'%' : '0%';
+      const pB = total ? Math.round(vB/total*100)+'%' : '0%';
+      const pC = total ? Math.round(vC/total*100)+'%' : '0%';
+      const insight = INSIGHTS[idx][mayoria] || 'Insight pendiente...';
+      const chartId = `chart-${idx}`;
       const card = document.createElement('div');
       card.className = 'scenario-card';
       card.innerHTML = `
         <div class="scenario-header">
-          <div class="tag">Escenario ${i+1}</div>
-          <h2>${nombre}</h2>
+          <div class="tag">Escenario ${idx}</div>
+          <h2>Escenario ${idx}</h2>
         </div>
         <div class="chart-area">
-          <canvas id="${chartId}" role="img" aria-label="Votos escenario ${i+1}"></canvas>
+          <canvas id="${chartId}" role="img" aria-label="Votos escenario ${idx}"></canvas>
         </div>
         <div class="vote-pills">
           <span class="pill"><span class="dot dot-a"></span>A — ${vA} votos <span class="pct">(${pA})</span></span>
@@ -377,54 +368,61 @@
         <div class="insight-box">
           <div class="insight-lbl">💡 Insight</div>
           <p>${insight}</p>
-        </div>
-      `;
+        </div>`;
       grid.appendChild(card);
       renderChart(chartId, vA, vB, vC);
     });
   }
 
-  // ── Fetch y parseo principal ──
+  // ── Cálculo desde Hoja1 ──
+  function calcFromHoja1(rows) {
+    // Saltar fila de encabezado
+    const data = rows.slice(1).filter(r => r[5] && r[5].trim() === 'Finalizado');
+
+    // col 6=E1, 7=E2, 8=E3
+    const scenData = [1, 2, 3].map(idx => {
+      const col = 5 + idx; // col 6,7,8 → índice 6,7,8
+      const vA = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'A').length;
+      const vB = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'B').length;
+      const vC = data.filter(r => r[col] && r[col].trim().toUpperCase() === 'C').length;
+      const total = vA + vB + vC;
+      let mayoria = 'A';
+      if (vB >= vA && vB >= vC) mayoria = 'B';
+      else if (vC > vA && vC > vB) mayoria = 'C';
+      return { idx, vA, vB, vC, total, mayoria };
+    });
+
+    return { scenData, totalPart: data.length };
+  }
+
+  // ── Fetch principal ──
   async function loadData() {
     try {
-      const res = await fetch(SHEET_URL + '&t=' + Date.now());
+      const res  = await fetch(SHEET_URL + '&t=' + Date.now());
       const text = await res.text();
       const rows = parseCSV(text);
 
-      // Buscar filas de escenarios (Escenario 1, Escenario 2, etc. — excluye encabezado)
-      const scenRows = rows.filter(r => r[0] && /^escenario\s+\d+/i.test(r[0].trim()));
+      const { scenData, totalPart } = calcFromHoja1(rows);
 
-      if (!scenRows.length) {
-        document.getElementById('loading-msg').textContent = '⚠️ No se encontraron datos de escenarios en el Sheet.';
+      if (!totalPart && scenData.every(s => s.total === 0)) {
+        const msg = document.getElementById('loading-msg');
+        if (msg) msg.textContent = '⏳ Sin respuestas aún. Esperando participantes...';
         return;
       }
 
-      // KPI total: buscar fila de totales o sumar
-      let total = 0;
-      const totRow = rows.find(r => r[0] && r[0].toLowerCase().includes('total'));
-      if (totRow) {
-        total = num(totRow[4]);
-      } else {
-        scenRows.forEach(r => { total = Math.max(total, num(r[4])); });
-      }
-
-      document.getElementById('subtitle').textContent =
-        `Noatum · ${scenRows.length} escenarios activos`;
-
-      renderScenarios(scenRows);
+      renderScenarios(scenData);
 
       const now = new Date();
       document.getElementById('footer-time').textContent =
-        `Última actualización: ${now.toLocaleTimeString('es-PE')} · Se refresca automáticamente cada 30 segundos`;
+        `${totalPart} participantes · Última actualización: ${now.toLocaleTimeString('es-PE')} · Refresco cada 30s`;
 
     } catch (err) {
       console.error(err);
       const msg = document.getElementById('loading-msg');
-      if (msg) msg.textContent = '❌ Error al conectar con Google Sheets. Verifica que el Sheet esté publicado.';
+      if (msg) msg.textContent = '❌ Error al conectar con Google Sheets.';
     }
   }
 
-  // ── Iniciar y refrescar ──
   loadData();
   setInterval(loadData, REFRESH_MS);
 </script>
