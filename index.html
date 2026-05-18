@@ -19,7 +19,7 @@
     .bg {
       position: fixed;
       inset: 0;
-      background: url('image/Noatum%20background%20image.png') center center / cover no-repeat;
+      background: url('image/noatum-bg.png') center center / cover no-repeat;
       z-index: 0;
     }
     .bg::after {
@@ -82,35 +82,6 @@
     @keyframes pulse {
       0%,100% { opacity:1; transform:scale(1); }
       50%      { opacity:.4; transform:scale(0.85); }
-    }
-
-    /* ── KPI TOP ── */
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 14px;
-      margin-bottom: 2rem;
-    }
-    .kpi-card {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 14px;
-      padding: 1.1rem 1.25rem;
-      text-align: center;
-      backdrop-filter: blur(8px);
-    }
-    .kpi-card .kpi-val {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
-    }
-    .kpi-card .kpi-lbl {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.5);
-      margin-top: 5px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
 
     /* ── GRID DE ESCENARIOS ── */
@@ -252,22 +223,6 @@
     </div>
   </header>
 
-  <!-- KPIs -->
-  <div class="kpi-row">
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpi-total">—</div>
-      <div class="kpi-lbl">Participantes</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpi-escenarios">3</div>
-      <div class="kpi-lbl">Escenarios</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val" id="kpi-refresh">30s</div>
-      <div class="kpi-lbl">Actualización</div>
-    </div>
-  </div>
-
   <!-- ESCENARIOS -->
   <div class="scenarios-grid" id="scenarios-grid">
     <div class="status-msg" id="loading-msg">⏳ Conectando con Google Sheets...</div>
@@ -404,8 +359,8 @@
       const text = await res.text();
       const rows = parseCSV(text);
 
-      // Buscar filas de escenarios (empiezan con "Escenario")
-      const scenRows = rows.filter(r => r[0] && r[0].toLowerCase().startsWith('escenario'));
+      // Buscar filas de escenarios (Escenario 1, Escenario 2, etc. — excluye encabezado)
+      const scenRows = rows.filter(r => r[0] && /^escenario\s+\d+/i.test(r[0].trim()));
 
       if (!scenRows.length) {
         document.getElementById('loading-msg').textContent = '⚠️ No se encontraron datos de escenarios en el Sheet.';
@@ -421,7 +376,6 @@
         scenRows.forEach(r => { total = Math.max(total, num(r[4])); });
       }
 
-      document.getElementById('kpi-total').textContent = total || '—';
       document.getElementById('subtitle').textContent =
         `Noatum · ${scenRows.length} escenarios activos`;
 
