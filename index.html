@@ -175,6 +175,15 @@
       .scenario-header h2 { font-size: 1.1rem; }
     }
 
+    .waiting-msg {
+      margin: 0.5rem 0.7rem 0.8rem;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.45);
+      font-style: italic;
+      text-align: center;
+      padding: 0.5rem;
+    }
+
     .status-msg {
       text-align: center; padding: 2rem;
       color: rgba(255,255,255,0.5); font-size: 0.9rem;
@@ -275,7 +284,7 @@
     grid.innerHTML = '';
     scenData.forEach(({ idx, vA, vB, vC, total, mayoria }) => {
       const pct = v => total ? Math.round(v/total*100)+'%' : '0%';
-      const insight = INSIGHTS[idx][mayoria] || '';
+      const insight = mayoria ? (INSIGHTS[idx][mayoria] || '') : null;
       const chartId = `chart-${idx}`;
       const card = document.createElement('div');
       card.className = 'scenario-card';
@@ -292,11 +301,14 @@
           <span class="pill"><span class="dot dot-b"></span>B — ${vB} <span class="pct">(${pct(vB)})</span></span>
           <span class="pill"><span class="dot dot-c"></span>C — ${vC} <span class="pct">(${pct(vC)})</span></span>
         </div>
-        <div class="mayoria-badge">🏆 Mayoría: Opción ${mayoria}</div>
-        <div class="insight-box">
-          <div class="insight-lbl">💡 Insight</div>
-          <p>${insight}</p>
-        </div>`;
+        ${mayoria
+          ? `<div class="mayoria-badge">🏆 Mayoría: Opción ${mayoria}</div>
+             <div class="insight-box">
+               <div class="insight-lbl">💡 Insight</div>
+               <p>${insight}</p>
+             </div>`
+          : `<div class="waiting-msg">⏳ Sin respuestas aún...</div>`
+        }`;
       grid.appendChild(card);
       renderChart(chartId, vA, vB, vC);
     });
@@ -317,9 +329,12 @@
       const vB = filas.filter(r => r[3].trim().toUpperCase() === 'B').length;
       const vC = filas.filter(r => r[3].trim().toUpperCase() === 'C').length;
       const total = vA + vB + vC;
-      let mayoria = 'A';
-      if (vB >= vA && vB >= vC) mayoria = 'B';
-      else if (vC > vA && vC > vB) mayoria = 'C';
+      let mayoria = null;
+      if (total > 0) {
+        mayoria = 'A';
+        if (vB >= vA && vB >= vC) mayoria = 'B';
+        else if (vC > vA && vC > vB) mayoria = 'C';
+      }
       return { idx, vA, vB, vC, total, mayoria };
     });
     return scenData;
